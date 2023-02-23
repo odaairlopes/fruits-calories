@@ -1,25 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./App.css";
+import FruitsList from "./pages/fruits";
+import Home from "./pages/home";
+import api from "./services/api/api";
+import { useState } from "react";
+import { IFruitList } from "./types/fruits";
 
 function App() {
+  const [fruits, setFruits] = useState<IFruitList[]>([]);
+  api
+    .get("/fruits-api/fruits.json")
+    .then((res) => setFruits(res.data))
+    .catch((err) => console.log(err));
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path="/fruits" element={<FruitsList fruits={fruits} />} />
+      </Routes>
+    </Router>
   );
 }
 
